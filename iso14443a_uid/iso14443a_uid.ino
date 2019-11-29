@@ -61,7 +61,13 @@ Adafruit_PN532 nfc(PN532_SS);
    #define Serial SerialUSB
 #endif
 
+
+#define STA_LED 2 //D2
+
 void setup(void) {
+    pinMode(STA_LED, OUTPUT);
+    digitalWrite(STA_LED, HIGH);   // turn the LED off (HIGH is the voltage level)
+    
   #ifndef ESP8266
     while (!Serial); // for Leonardo/Micro/Zero
   #endif
@@ -94,7 +100,7 @@ void setup(void) {
 }
 
 void loop(void) {
-  boolean result_success;
+  boolean result_success=0;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };	// Buffer to store the returned UID
   uint8_t uidLength;				// Length of the UID (4 or 7 bytes depending on ISO14443A card type)
   
@@ -112,6 +118,7 @@ void loop(void) {
       SerialUSB.print(" 0x");SerialUSB.print(uid[i], HEX); 
     }
     SerialUSB.println("");
+    digitalWrite(STA_LED, LOW);// turn the LED on (LOW is the voltage level)
     result_success=0;
 	// Wait 1 second before continuing
 	delay(1000);
@@ -121,4 +128,5 @@ void loop(void) {
     // PN532 probably timed out waiting for a card
     SerialUSB.println("Timed out waiting for a card");
   }
+  digitalWrite(STA_LED, HIGH);   // turn the LED off (HIGH is the voltage level)
 }
